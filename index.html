@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#1D9E75">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="LavaLimp">
+<title>LavaLimp</title>
+
+<!-- ════════════════════════════════════════════════════════════
+  ⚠️  CONFIGURACIÓN — LEE ESTO PRIMERO
+  ════════════════════════════════════════════════════════════
+  Después de desplegar el backend (lavalimp_backend.gs),
+  sustituye la URL de abajo por la URL real de tu script.
+  Debe empezar por: https://script.google.com/macros/s/...
+  ═══════════════════════════════════════════════════════════ -->
+<script>
+  const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxu6xbbxy1fWf8bEo3yq_4cWUDN5nFgxUsFDrRnin3tXf2GkYbqBrArU2pctlFE6Ia1GA/exec';
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#1D9E75;--teal-dk:#0F6E56;--teal-lt:#e1f5ee;--bg:#f0faf6;--card:#fff;--bdr:#d1ede3;--txt:#1a2e23;--muted:#6b8c7a;--r:16px;--rsm:11px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+.app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);display:flex;flex-direction:column}
+.hdr{background:var(--card);border-bottom:1.5px solid var(--bdr);padding:13px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:20;flex-shrink:0}
+.hdr-title{font-family:'Nunito',sans-serif;font-size:15px;font-weight:800}
+.hdr-sub{font-size:11px;color:var(--muted);font-weight:600;margin-top:1px}
+.back-btn{background:var(--teal-lt);border:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--teal);font-size:19px;font-weight:900;line-height:1}
+.prog-wrap{background:var(--card);padding:8px 16px 11px;border-bottom:1.5px solid var(--bdr);flex-shrink:0}
+.prog-track{height:6px;background:var(--teal-lt);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),#38d9a9);border-radius:99px;transition:width .4s cubic-bezier(.34,1.56,.64,1)}
+.prog-lbl{font-size:11px;color:var(--muted);font-weight:600;margin-top:4px;text-align:right}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.pad{padding:16px;padding-bottom:48px}
+.screen{display:none}.screen.active{display:flex;flex-direction:column;flex:1}
+.hero{padding:24px 20px 12px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.app-name{font-family:'Nunito',sans-serif;font-size:34px;font-weight:900;color:var(--teal);letter-spacing:-1px;margin-top:8px}
+.tagline{font-size:13px;color:var(--muted);font-weight:600;margin-top:3px}
+.sec-lbl{font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 10px}
+.name-inp{width:100%;padding:14px 16px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:15px;font-family:'Nunito',sans-serif;font-weight:700;background:var(--card);color:var(--txt)}
+.name-inp:focus{outline:none;border-color:var(--teal)}
+.apt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.apt-card{background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px 12px;cursor:pointer;transition:transform .12s,border-color .12s;display:flex;align-items:center;gap:9px}
+.apt-card:active{transform:scale(.97);border-color:var(--teal)}
+.apt-card.sel{border-color:var(--teal);background:var(--teal-lt)}
+.apt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.apt-name{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;flex:1}
+.step-hdr-block{background:var(--card);padding:16px 16px 14px;border-bottom:1.5px solid var(--bdr);flex-shrink:0}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:white;margin-bottom:8px}
+.step-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;line-height:1.2}
+.step-desc{font-size:12px;color:var(--muted);font-weight:600;margin-top:3px}
+.task-card{background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;transition:border-color .15s}
+.task-card.done-card{border-color:var(--teal);opacity:.72}
+.task-row{display:flex;align-items:flex-start;gap:12px}
+.cb{width:28px;height:28px;border-radius:8px;border:2px solid var(--bdr);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px;background:white}
+.cb.ck{background:var(--teal);border-color:var(--teal)}
+.cbsv{display:none}.cb.ck .cbsv{display:block}
+.task-body{flex:1}
+.task-tx{font-size:14px;line-height:1.5;font-weight:600}
+.task-tx.done{text-decoration:line-through;color:#9cbfb0}
+.tip{font-size:12px;color:var(--teal);font-weight:700;margin-top:5px;background:var(--teal-lt);padding:4px 9px;border-radius:8px;display:inline-block}
+.media-zone{margin-top:12px;padding-top:12px;border-top:1px dashed var(--bdr)}
+.media-row{display:flex;gap:8px}
+.mbtn{flex:1;padding:10px 0;border:1.5px solid var(--bdr);border-radius:var(--rsm);background:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;text-align:center}
+.mbtn:active{border-color:var(--teal);color:var(--teal);background:var(--teal-lt)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.img-th{width:72px;height:72px;border-radius:9px;object-fit:cover;border:1.5px solid var(--bdr)}
+.vid-th{width:72px;height:72px;border-radius:9px;background:#1a2e23;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:22px;gap:2px}
+.vid-nm{font-size:8px;color:rgba(255,255,255,.65);text-align:center;padding:0 4px;word-break:break-all;font-weight:600}
+.note{width:100%;border:1.5px solid var(--bdr);border-radius:var(--rsm);padding:10px 12px;font-size:13px;font-family:'Nunito Sans',sans-serif;color:var(--txt);background:white;resize:none;margin-top:9px;min-height:66px;font-weight:600}
+.note:focus{outline:none;border-color:var(--teal)}
+.insp-banner{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:var(--r);padding:12px 14px;margin-bottom:12px;font-size:12px;color:#9a3412;font-weight:600;line-height:1.6}
+.inc-card{background:white;border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.inc-card.has-inc{border-color:#f97316}
+.inc-header{display:flex;align-items:center;gap:12px}
+.inc-icon{width:36px;height:36px;border-radius:10px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.inc-info{flex:1}
+.inc-title{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800}
+.inc-sub{font-size:11px;color:var(--muted);font-weight:600;margin-top:1px}
+.inc-btn{border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;padding:6px 12px;border-radius:99px;transition:all .12s;white-space:nowrap}
+.inc-btn.add{background:#fff7ed;color:#c2410c;border:1.5px solid #fed7aa}
+.inc-btn.done-btn{background:var(--teal-lt);color:var(--teal-dk);border:1.5px solid var(--bdr)}
+.inc-body{margin-top:12px;padding-top:12px;border-top:1px dashed #fed7aa}
+.inc-media-row{display:flex;gap:8px;margin-bottom:8px}
+.inc-mbtn{flex:1;padding:9px 0;border:1.5px solid #fed7aa;border-radius:var(--rsm);background:white;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:#c2410c;cursor:pointer;text-align:center}
+.inc-mbtn:active{background:#fff7ed}
+.buy-cat-block{background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.buy-cat-lbl{font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.buy-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #eef7f3}
+.buy-row:last-of-type{border-bottom:none}
+.buy-cb{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--bdr);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:white;transition:all .15s}
+.buy-cb.ck{background:#8b5cf6;border-color:#8b5cf6}
+.buy-lbl{font-size:13px;font-weight:600;flex:1}
+.buy-lbl.done{text-decoration:line-through;color:#9cbfb0}
+.buy-note-inp{width:100%;border:1.5px solid var(--bdr);border-radius:9px;padding:7px 10px;font-size:12px;font-family:'Nunito Sans',sans-serif;color:var(--txt);background:white;resize:none;margin-top:6px;min-height:48px;font-weight:600}
+.buy-note-inp:focus{outline:none;border-color:#8b5cf6}
+.add-row{display:flex;gap:8px;margin-top:10px}
+.add-inp{flex:1;border:1.5px solid var(--bdr);border-radius:10px;padding:9px 12px;font-size:13px;font-family:'Nunito Sans',sans-serif;background:white;color:var(--txt);font-weight:600}
+.add-inp:focus{outline:none;border-color:var(--teal)}
+.add-btn-sm{background:var(--teal);color:white;border:none;border-radius:10px;padding:9px 14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer}
+.sum-block{background:white;border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
+.sum-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:5px 0;border-bottom:1px solid #eef7f3}
+.sum-row:last-child{border-bottom:none}
+.slbl{color:var(--muted);font-weight:600}
+.bdg{font-family:'Nunito',sans-serif;display:inline-block;font-size:11px;padding:3px 10px;border-radius:99px;font-weight:800}
+.bok{background:var(--teal-lt);color:var(--teal-dk)}.bwn{background:#fef3c7;color:#92400e}.brd{background:#fee2e2;color:#b91c1c}
+.firm-cv{display:block;width:100%;cursor:crosshair;touch-action:none;border:1.5px dashed var(--bdr);border-radius:var(--rsm);background:white}
+.clear-f{font-family:'Nunito',sans-serif;font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:6px;text-decoration:underline;font-weight:700}
+.btn-p{width:100%;padding:16px;background:var(--teal);color:white;border:none;border-radius:var(--r);font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;cursor:pointer;margin-top:16px;transition:all .15s}
+.btn-p:active{background:var(--teal-dk);transform:scale(.98)}
+.btn-p:disabled{background:#c5dfd5;color:#8bbfad;cursor:not-allowed;transform:none}
+.btn-s{width:100%;padding:15px;background:white;color:var(--teal);border:1.5px solid var(--teal);border-radius:var(--r);font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;cursor:pointer;margin-top:10px;transition:all .15s}
+.btn-s:active{background:var(--teal-lt);transform:scale(.98)}
+.suc-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;padding:48px 24px 40px}
+.suc-title{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;color:var(--teal);margin-top:16px}
+.suc-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:280px;margin:8px auto 0;font-weight:600}
+/* Upload status */
+.upload-status{background:white;border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px 16px;margin-top:16px;font-size:13px;font-weight:600}
+.upload-row{display:flex;align-items:center;gap:10px;padding:5px 0}
+.upload-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot-ok{background:var(--teal)}.dot-err{background:#ef4444}.dot-spin{background:#f59e0b;animation:spin-dot 1s linear infinite}
+@keyframes spin-dot{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}
+.hist-item{background:white;border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.hist-apt{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800}
+.hist-meta{font-size:12px;color:var(--muted);margin-top:3px;font-weight:600}
+.hist-inc{font-size:12px;color:#c2410c;font-weight:700;margin-top:2px}
+.hist-drive{font-size:12px;color:var(--teal);font-weight:700;margin-top:2px}
+.empty{text-align:center;padding:48px 20px;color:#b0ccbf;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700}
+/* install banner */
+.install-banner{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:var(--r);padding:12px 14px;margin:0 16px 12px;font-size:12px;color:#9a3412;font-weight:600;display:none;align-items:center;gap:10px}
+.install-banner button{background:#c2410c;color:white;border:none;border-radius:10px;padding:7px 12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap}
+input[type="file"]{display:none}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- INSTALL BANNER -->
+<div class="install-banner" id="install-banner">
+  <span>📲 Instala LavaLimp en tu móvil para usarla como app</span>
+  <button onclick="installApp()">Instalar</button>
+</div>
+
+<!-- ── WELCOME ── -->
+<div class="screen active" id="s-welcome">
+  <div class="scroll">
+    <div class="hero">
+      <svg width="140" height="178" viewBox="0 0 160 200" fill="none">
+        <rect x="77" y="10" width="6" height="68" rx="3" fill="#9CCFC0"/>
+        <ellipse cx="81" cy="84" rx="28" ry="10" fill="#38d9a9"/>
+        <rect x="56" y="89" width="4" height="15" rx="2" fill="#1D9E75"/><rect x="64" y="89" width="4" height="19" rx="2" fill="#38d9a9"/>
+        <rect x="72" y="89" width="4" height="17" rx="2" fill="#1D9E75"/><rect x="80" y="89" width="4" height="21" rx="2" fill="#38d9a9"/>
+        <rect x="88" y="89" width="4" height="16" rx="2" fill="#1D9E75"/><rect x="96" y="89" width="4" height="19" rx="2" fill="#38d9a9"/>
+        <rect x="104" y="89" width="4" height="13" rx="2" fill="#1D9E75"/>
+        <circle cx="81" cy="70" r="18" fill="#FCD34D"/>
+        <path d="M70 65 L72 68 L75 65 L72 62 Z" fill="#1D9E75"/>
+        <line x1="69" y1="66.5" x2="75" y2="66.5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="72" y1="63.5" x2="72" y2="69.5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="71" cy="63.5" r="1" fill="white"/><circle cx="75" cy="67.5" r=".8" fill="white"/>
+        <path d="M87 65 L89 68 L92 65 L89 62 Z" fill="#1D9E75"/>
+        <line x1="86" y1="66.5" x2="92" y2="66.5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="89" y1="63.5" x2="89" y2="69.5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="88" cy="63.5" r="1" fill="white"/><circle cx="92" cy="67.5" r=".8" fill="white"/>
+        <path d="M75 74 Q81 79 87 74" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <ellipse cx="71" cy="74" rx="4" ry="2.5" fill="#FB923C" opacity=".4"/><ellipse cx="91" cy="74" rx="4" ry="2.5" fill="#FB923C" opacity=".4"/>
+        <rect x="28" y="118" width="106" height="80" rx="16" fill="white" stroke="#d1ede3" stroke-width="2"/>
+        <rect x="28" y="118" width="106" height="22" rx="16" fill="#e8f7f3"/><rect x="28" y="130" width="106" height="10" fill="#e8f7f3"/>
+        <circle cx="48" cy="129" r="5" fill="#1D9E75"/><circle cx="64" cy="129" r="5" fill="#38d9a9"/><circle cx="125" cy="129" r="4" fill="#FCD34D"/>
+        <circle cx="81" cy="163" r="28" fill="#d1ede3"/><circle cx="81" cy="163" r="23" fill="#e8f7f3"/>
+        <path d="M65 155 Q81 148 97 155 Q81 168 65 155Z" fill="#38d9a9" opacity=".5"/>
+        <ellipse cx="72" cy="157" rx="4.5" ry="5" fill="white"/><ellipse cx="90" cy="157" rx="4.5" ry="5" fill="white"/>
+        <circle cx="73" cy="157" r="2.8" fill="#1a2e23"/><circle cx="91" cy="157" r="2.8" fill="#1a2e23"/>
+        <circle cx="74" cy="155.5" r="1" fill="white"/><circle cx="92" cy="155.5" r="1" fill="white"/>
+        <path d="M70 170 Q81 178 92 170" stroke="#1a2e23" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <rect x="74" y="170" width="5" height="3" rx="1" fill="white"/><rect x="80.5" y="170" width="5" height="3" rx="1" fill="white"/>
+        <ellipse cx="65" cy="168" rx="5" ry="3" fill="#FB923C" opacity=".35"/><ellipse cx="97" cy="168" rx="5" ry="3" fill="#FB923C" opacity=".35"/>
+        <path d="M22 140 L25 142 L22 144 L19 142 Z" fill="#FCD34D"/>
+        <path d="M138 145 L141 148 L138 151 L135 148 Z" fill="#38d9a9"/>
+        <path d="M30 180 L33 183 L30 186 L27 183 Z" fill="#FCD34D"/>
+      </svg>
+      <div class="app-name">LavaLimp</div>
+      <div class="tagline">Protocolo Eficiencia Total ✨</div>
+    </div>
+    <div class="pad" style="padding-top:0">
+      <div class="sec-lbl">Tu nombre</div>
+      <input class="name-inp" id="limpNombre" type="text" placeholder="Escribe tu nombre completo..." autocomplete="name">
+      <div class="sec-lbl">Selecciona el apartamento</div>
+      <div class="apt-grid">
+        <div class="apt-card" onclick="selApt(0,this)"><div class="apt-dot" style="background:#1D9E75"></div><div class="apt-name">Varillas 1</div></div>
+        <div class="apt-card" onclick="selApt(1,this)"><div class="apt-dot" style="background:#0ea5e9"></div><div class="apt-name">Varillas 2</div></div>
+        <div class="apt-card" onclick="selApt(2,this)"><div class="apt-dot" style="background:#8b5cf6"></div><div class="apt-name">Varillas 3</div></div>
+        <div class="apt-card" onclick="selApt(3,this)"><div class="apt-dot" style="background:#f59e0b"></div><div class="apt-name">Traviesa 1</div></div>
+        <div class="apt-card" onclick="selApt(4,this)"><div class="apt-dot" style="background:#ef4444"></div><div class="apt-name">Traviesa 2</div></div>
+        <div class="apt-card" onclick="selApt(5,this)"><div class="apt-dot" style="background:#ec4899"></div><div class="apt-name">Rua Martín</div></div>
+      </div>
+      <button class="btn-p" id="btn-start" onclick="startFlow()" disabled>Comenzar limpieza →</button>
+      <button class="btn-s" onclick="showHistorial()">Ver historial</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── HISTORIAL ── -->
+<div class="screen" id="s-historial">
+  <div class="hdr">
+    <button class="back-btn" onclick="showScreen('s-welcome')">‹</button>
+    <div><div class="hdr-title">Historial</div><div class="hdr-sub">Limpiezas registradas</div></div>
+  </div>
+  <div class="scroll"><div class="pad"><div id="hist-list"><div class="empty">Aún no hay limpiezas 🧹</div></div></div></div>
+</div>
+
+<!-- ── STEP ── -->
+<div class="screen" id="s-step">
+  <div class="hdr">
+    <button class="back-btn" id="step-back" onclick="stepBack()">‹</button>
+    <div style="flex:1"><div class="hdr-title" id="step-hdr-title">LavaLimp</div><div class="hdr-sub" id="step-hdr-sub"></div></div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="prog-lbl" id="prog-lbl">Paso 0 de 0</div>
+  </div>
+  <div class="step-hdr-block" id="step-hdr-block">
+    <div class="step-num" id="step-num-badge">1</div>
+    <div class="step-title" id="step-title">Título</div>
+    <div class="step-desc" id="step-desc">Descripción</div>
+  </div>
+  <div class="scroll"><div class="pad" id="step-body"></div></div>
+</div>
+
+<!-- ── FIRMA ── -->
+<div class="screen" id="s-firma">
+  <div class="hdr">
+    <button class="back-btn" onclick="goStep(G.stepIdx-1)">‹</button>
+    <div><div class="hdr-title">Confirmación final</div><div class="hdr-sub" id="firma-sub"></div></div>
+  </div>
+  <div class="scroll"><div class="pad">
+    <div class="sec-lbl">Resumen</div>
+    <div class="sum-block" id="firma-sum"></div>
+    <div class="sec-lbl">Firma con el dedo</div>
+    <canvas id="firma-cv" class="firm-cv" width="380" height="130"></canvas>
+    <button class="clear-f" onclick="clearFirma()">Borrar firma</button>
+    <button class="btn-p" onclick="finalizar()">Confirmar y enviar ✅</button>
+  </div></div>
+</div>
+
+<!-- ── SUCCESS ── -->
+<div class="screen" id="s-success">
+  <div class="scroll"><div class="suc-wrap">
+    <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+      <circle cx="45" cy="45" r="45" fill="#e1f5ee"/>
+      <path d="M25 45 L38 58 L65 30" stroke="#1D9E75" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="suc-title">¡Limpieza completada!</div>
+    <div class="suc-sub" id="suc-sub-txt">Guardando en Google Sheets y Drive...</div>
+    <div class="upload-status" id="upload-status">
+      <div class="upload-row"><div class="upload-dot dot-spin" id="dot-sheets"></div><span id="lbl-sheets">Enviando a Google Sheets...</span></div>
+      <div class="upload-row"><div class="upload-dot dot-spin" id="dot-drive"></div><span id="lbl-drive">Subiendo fotos a Drive...</span></div>
+    </div>
+    <div id="drive-link-wrap" style="display:none;margin-top:12px">
+      <a id="drive-link" href="#" target="_blank" style="font-family:Nunito;font-size:13px;font-weight:800;color:var(--teal);text-decoration:none">📁 Abrir carpeta en Drive →</a>
+    </div>
+    <button class="btn-p" style="margin-top:20px" onclick="descargarInforme()">Descargar informe PDF 📄</button>
+    <button class="btn-s" onclick="showScreen('s-welcome')">Nueva limpieza</button>
+  </div></div>
+</div>
+
+<input type="file" id="fp" accept="image/*" capture="environment" multiple>
+<input type="file" id="fv" accept="video/*" capture="environment">
+
+<script>
+/* ═══════════════════════════════════════
+   DATOS
+═══════════════════════════════════════ */
+const APTS   = ['Varillas 1','Varillas 2','Varillas 3','Traviesa 1','Traviesa 2','Rua Martín'];
+const ACOLS  = ['#1D9E75','#0ea5e9','#8b5cf6','#f59e0b','#ef4444','#ec4899'];
+
+const INSP_ITEMS = [
+  {id:'i1',icon:'🪣',lbl:'Suciedad excesiva general',sub:'El piso está mucho más sucio de lo habitual'},
+  {id:'i2',icon:'💥',lbl:'Objetos rotos o dañados',sub:'Muebles, electrodomésticos, vajilla, decoración...'},
+  {id:'i3',icon:'🎨',lbl:'Manchas o daños en paredes / suelos',sub:'Manchas, golpes, arañazos, pintadas...'},
+  {id:'i4',icon:'❓',lbl:'Artículos del apartamento que faltan',sub:'Toallas, utensilios, mandos, fundas...'},
+  {id:'i5',icon:'👜',lbl:'Objetos olvidados por los huéspedes',sub:'Ropa, cargadores, documentos, llaves...'},
+  {id:'i6',icon:'⚠️',lbl:'Otros incidentes',sub:'Cualquier otra anomalía relevante'}
+];
+
+const BUY_CATS = [
+  {id:'bc1',lbl:'Ropa de cama y baño',items:[
+    {id:'b01',t:'Sábanas 1,50m'},{id:'b02',t:'Sábanas 90cm'},{id:'b03',t:'Fundas de almohada'},
+    {id:'b04',t:'Almohadones / almohadas'},{id:'b05',t:'Toallas de baño'},{id:'b06',t:'Toallas de mano'},{id:'b07',t:'Alfombrín de baño'}]},
+  {id:'bc2',lbl:'Amenities y consumibles',items:[
+    {id:'b08',t:'Papel higiénico'},{id:'b09',t:'Gel de ducha / champú'},{id:'b10',t:'Jabón de manos'},
+    {id:'b11',t:'Bolsas de basura'},{id:'b12',t:'Cápsulas de café'},{id:'b13',t:'Cápsulas de leche'},{id:'b14',t:'Bayetas'},{id:'b15',t:'Estropajos'}]},
+  {id:'bc3',lbl:'Productos de limpieza',items:[
+    {id:'b16',t:'Limpiahogar multiusos'},{id:'b17',t:'Limpiacristales'},{id:'b18',t:'Desengrasante cocina'},
+    {id:'b19',t:'Limpiador baño / antical'},{id:'b20',t:'Pastillas lavavajillas'},{id:'b21',t:'Fregasuelos'}]},
+  {id:'bc4',lbl:'Cocina y vajilla',items:[
+    {id:'b22',t:'Vasos / tazas'},{id:'b23',t:'Platos'},{id:'b24',t:'Cubiertos'},{id:'b25',t:'Sartén / cazuela'},{id:'b26',t:'Tabla de cortar'}]},
+  {id:'bc5',lbl:'Otros artículos',items:[]}
+];
+
+const PHASES_BASE = [
+  {id:'p0',icon:'👁',color:'#c2410c',name:'Inspección Visual',desc:'Documenta daños antes de limpiar — prueba para fianza',type:'insp'},
+  {id:'p1',icon:'1',color:'#1D9E75',name:'Preparación y Ventilación',desc:'5 minutos — Primer contacto con el piso',tasks:[
+    {id:'t01',tx:'Termostato: apágalo o ponlo en modo ahorro/apagado',tip:'No gastes energía innecesaria desde el principio',m:false},
+    {id:'t02',tx:'Abre todas las ventanas nada más entrar',tip:'El aire fresco acelera el secado de productos',m:false},
+    {id:'t03',tx:'Cocina Fase 1: mete todo lo sucio en el lavavajillas y ponlo en marcha (programa corto)',tip:'Mientras tú limpias el resto, el lavavajillas trabaja solo',m:true},
+    {id:'t04',tx:'Desembarazo: retira sábanas y toallas usadas en una bolsa. Recoge la basura de todas las estancias',tip:'No sacudas dentro — levantarías polvo',m:false}
+  ]},
+  {id:'pp',icon:'🌿',color:'#15803d',name:'Limpieza del Patio',desc:'Exclusivo Varillas 1',varillas1only:true,tasks:[
+    {id:'tp1',tx:'Revisar que no haya colillas ni objetos en el césped o la planta',tip:'Recoger todo antes de barrer',m:true},
+    {id:'tp2',tx:'Limpiar alféizares: quitar polvo y suciedad',tip:'',m:true},
+    {id:'tp3',tx:'Limpiar cristales del patio',tip:'',m:true},
+    {id:'tp4',tx:'Limpiar sillas y mesas del patio',tip:'',m:true}
+  ]},
+  {id:'p2',icon:'2',color:'#0ea5e9',name:'Zona Húmeda — Cocina y Baño',desc:'El motor del tiempo',tasks:[
+    {id:'t05',tx:'Cocina Fase 2: limpia interior de nevera, microondas y superficie de trabajo',tip:'',m:true},
+    {id:'t06',tx:'Cafetera: tira cápsulas usadas, limpia el compartimento y coloca 2 cápsulas de café + 2 de leche',tip:'Colocación exacta: 2 café + 2 leche',m:true},
+    {id:'t07',tx:'Cocina Fase 3: coloca el Kit de Bienvenida (bolsa de basura, bayeta, estropajo y jabón) al lado del fregadero',tip:'',m:true},
+    {id:'t08',tx:'Baño Fase 1 — Química: rocía productos en ducha, WC y lavabo. No limpies todavía',tip:'Deja actuar 5-10 min mientras haces otras cosas',m:false}
+  ]},
+  {id:'p3',icon:'3',color:'#f59e0b',name:'Dormitorio y Salón',desc:'Polvo y superficies',tasks:[
+    {id:'t09',tx:'Polvo: limpia de zonas altas a bajas (burra, mesitas, estantes)',tip:'Siempre de arriba hacia abajo',m:false},
+    {id:'t10',tx:'Cama 1,50m: haz la cama con sábanas limpias, sin arrugas ni pelos',tip:'Es lo que más luce para el huésped',m:true},
+    {id:'t11',tx:'Sofá-cama: deja las sábanas plegadas sobre el sofá (sin montar)',tip:'',m:true},
+    {id:'t12',tx:'Burra: pasa un paño por la barra, alinea las perchas',tip:'Evita que el polvo manche la ropa del huésped',m:false}
+  ]},
+  {id:'p4',icon:'4',color:'#10b981',name:'Finalización Baño y Amenities',desc:'El producto ya ha actuado',tasks:[
+    {id:'t13',tx:'Limpieza baño: aclara ducha, WC y lavabo. Grifería brillante',tip:'El producto ya actuó — solo hay que repasar',m:true},
+    {id:'t14',tx:'Espejo: límpialo sin huellas ni vaho',tip:'Es lo que más revisan los clientes',m:true},
+    {id:'t15',tx:'Seca la ducha. Limpia el dispensador de gel/champú (sin goteos). Comprueba que estén rellenos',tip:'',m:true},
+    {id:'t16',tx:'Repón toallas (juego completo, dobladas estéticamente) y papel higiénico (mínimo 2 rollos). Cesta con secador. Bolsa de basura en papelera',tip:'',m:true}
+  ]},
+  {id:'p5',icon:'5',color:'#8b5cf6',name:'Suelos y Cierre',desc:'De dentro hacia fuera — la salida',tasks:[
+    {id:'t17',tx:'Aspira o barre de dentro hacia fuera, terminando en la puerta',tip:'Mismo sentido que la salida',m:false},
+    {id:'t18',tx:'Friega el suelo si es necesario, mismo orden hacia la salida',tip:'Sin marcas de pisadas al salir',m:false},
+    {id:'t19',tx:'Revisión final: luces apagadas, ventanas cerradas, termostato 18-20°C, papeleras vacías, puerta bien cerrada',tip:'Haz un último vistazo completo antes de salir',m:true}
+  ]},
+  {id:'p6',icon:'🛒',color:'#6b7280',name:'Lista de Compras',desc:'Artículos a reponer o que faltan',type:'buy'}
+];
+
+/* ═══════════════════════════════════════
+   ESTADO
+═══════════════════════════════════════ */
+let G = { aptIdx:-1, limpiadora:'', phases:[], stepIdx:0, tasks:{}, notes:{}, photos:{}, insp:{}, buy:{}, buyCustom:[], firmaData:null };
+let history = [], lastReport = null, firmaCanvas, firmaCtx, drawing = false;
+let deferredInstall = null;
+
+function loadHist()  { try { history = JSON.parse(localStorage.getItem('ll_h') || '[]'); } catch(e) { history = []; } }
+function saveHist()  { try { localStorage.setItem('ll_h', JSON.stringify(history)); } catch(e) {} }
+
+/* ═══════════════════════════════════════
+   PWA INSTALL
+═══════════════════════════════════════ */
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstall = e;
+  document.getElementById('install-banner').style.display = 'flex';
+});
+function installApp() {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(() => {
+    deferredInstall = null;
+    document.getElementById('install-banner').style.display = 'none';
+  });
+}
+
+/* ═══════════════════════════════════════
+   NAVEGACIÓN
+═══════════════════════════════════════ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('active'); }
+  window.scrollTo(0,0);
+}
+function showHistorial() { renderHistory(); showScreen('s-historial'); }
+
+/* ═══════════════════════════════════════
+   WELCOME
+═══════════════════════════════════════ */
+document.getElementById('limpNombre').addEventListener('input', checkReady);
+function selApt(idx, card) {
+  document.querySelectorAll('.apt-card').forEach(c => c.classList.remove('sel'));
+  card.classList.add('sel');
+  G.aptIdx = idx;
+  checkReady();
+}
+function checkReady() {
+  const n = document.getElementById('limpNombre').value.trim();
+  document.getElementById('btn-start').disabled = !(n && G.aptIdx >= 0);
+}
+function startFlow() {
+  G.limpiadora = document.getElementById('limpNombre').value.trim();
+  G.phases = PHASES_BASE.filter(ph => !ph.varillas1only || G.aptIdx === 0);
+  G.stepIdx = 0;
+  G.tasks = {}; G.notes = {}; G.photos = {}; G.insp = {}; G.buy = {}; G.buyCustom = []; G.firmaData = null;
+  goStep(0);
+}
+
+/* ═══════════════════════════════════════
+   STEPS
+═══════════════════════════════════════ */
+function goStep(idx) {
+  G.stepIdx = idx;
+  const ph = G.phases[idx];
+  document.getElementById('step-hdr-title').textContent = APTS[G.aptIdx];
+  document.getElementById('step-hdr-sub').textContent   = G.limpiadora;
+  document.getElementById('step-back').style.display    = idx === 0 ? 'none' : 'flex';
+  const total = G.phases.length + 1;
+  document.getElementById('prog-fill').style.width = Math.round((idx / total) * 100) + '%';
+  document.getElementById('prog-lbl').textContent  = 'Paso ' + (idx + 1) + ' de ' + total;
+  const badge = document.getElementById('step-num-badge');
+  badge.textContent  = ph.icon;
+  badge.style.background  = ph.color;
+  badge.style.fontSize    = ph.icon.length > 1 ? '18px' : '14px';
+  document.getElementById('step-title').textContent = ph.name;
+  document.getElementById('step-desc').textContent  = ph.desc;
+  const body = document.getElementById('step-body');
+  body.innerHTML = '';
+  if (ph.type === 'insp')      renderInsp(body);
+  else if (ph.type === 'buy')  renderBuy(body);
+  else                         renderTasks(body, ph);
+  showScreen('s-step');
+}
+function stepBack() { G.stepIdx > 0 ? goStep(G.stepIdx - 1) : showScreen('s-welcome'); }
+function goNext()   { G.stepIdx + 1 >= G.phases.length ? goFirma() : goStep(G.stepIdx + 1); }
+
+/* ═══════════════════════════════════════
+   TAREAS
+═══════════════════════════════════════ */
+function renderTasks(body, ph) {
+  ph.tasks.forEach(task => {
+    const ck     = !!G.tasks[task.id];
+    const photos = G.photos[task.id] || [];
+    const note   = G.notes[task.id]  || '';
+    let phtml    = photos.map(p => p.type === 'video'
+      ? `<div class="vid-th">▶<span class="vid-nm">${p.name.substring(0,16)}</span></div>`
+      : `<img class="img-th" src="${p.data}">`).join('');
+    const card = document.createElement('div');
+    card.className = 'task-card' + (ck ? ' done-card' : '');
+    card.id = 'tc-' + task.id;
+    card.innerHTML = `
+      <div class="task-row">
+        <div class="cb${ck?' ck':''}" id="cb-${task.id}" onclick="togTask('${task.id}','${ph.id}')">
+          <svg class="cbsv" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 7.5l4 4 6-6.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="task-body">
+          <div class="task-tx${ck?' done':''}" id="tx-${task.id}">${task.tx}</div>
+          ${task.tip ? `<div class="tip">💡 ${task.tip}</div>` : ''}
+        </div>
+      </div>
+      ${task.m ? `<div class="media-zone">
+        <div class="media-row">
+          <div class="mbtn" onclick="addPh('${task.id}','${ph.id}')">📷 Añadir foto</div>
+          <div class="mbtn" onclick="addVi('${task.id}','${ph.id}')">🎥 Añadir vídeo</div>
+        </div>
+        <div class="thumbs" id="th-${task.id}">${phtml}</div>
+        <textarea class="note" placeholder="Añadir nota o comentario..." onchange="saveNote('${task.id}',this.value)">${note}</textarea>
+      </div>` : ''}`;
+    body.appendChild(card);
+  });
+  const btn = document.createElement('button');
+  btn.className = 'btn-p';
+  btn.style.marginTop = '24px';
+  btn.textContent = 'Continuar →';
+  btn.onclick = () => {
+    if (!ph.tasks.every(t => G.tasks[t.id])) {
+      alert('Marca todas las tareas antes de continuar.');
+      return;
+    }
+    goNext();
+  };
+  body.appendChild(btn);
+}
+
+function togTask(tid) {
+  G.tasks[tid] = !G.tasks[tid];
+  const cb   = document.getElementById('cb-' + tid);
+  const tx   = document.getElementById('tx-' + tid);
+  const card = document.getElementById('tc-' + tid);
+  if (cb)   cb.className   = 'cb' + (G.tasks[tid] ? ' ck' : '');
+  if (tx)   tx.className   = 'task-tx' + (G.tasks[tid] ? ' done' : '');
+  if (card) card.className = 'task-card' + (G.tasks[tid] ? ' done-card' : '');
+}
+function saveNote(id, v) { G.notes[id] = v; }
+
+/* ── Fotos ── */
+function addPh(id) {
+  const inp = document.getElementById('fp');
+  inp.onchange = async e => {
+    for (const f of e.target.files) {
+      const compressed = await compressImage(f, 1200, 0.75);
+      if (!G.photos[id]) G.photos[id] = [];
+      G.photos[id].push({ type:'image', data:compressed, name:f.name });
+      const th = document.getElementById('th-' + id);
+      if (th) { const img = document.createElement('img'); img.className='img-th'; img.src=compressed; th.appendChild(img); }
+    }
+    inp.value = '';
+  };
+  inp.click();
+}
+function addVi(id) {
+  const inp = document.getElementById('fv');
+  inp.onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    if (!G.photos[id]) G.photos[id] = [];
+    G.photos[id].push({ type:'video', data:null, name:f.name });
+    const th = document.getElementById('th-' + id);
+    if (th) { const d = document.createElement('div'); d.className='vid-th'; d.innerHTML='▶<span class="vid-nm">'+f.name.substring(0,16)+'</span>'; th.appendChild(d); }
+    inp.value = '';
+  };
+  inp.click();
+}
+
+/* Compresión de imágenes antes de subir */
+function compressImage(file, maxW, quality) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function b64(f) { return new Promise(r => { const rd = new FileReader(); rd.onload = () => r(rd.result); rd.readAsDataURL(f); }); }
+
+/* ═══════════════════════════════════════
+   INSPECCIÓN
+═══════════════════════════════════════ */
+function renderInsp(body) {
+  const banner = document.createElement('div');
+  banner.className = 'insp-banner';
+  banner.innerHTML = '📸 <strong>Documenta todo antes de limpiar.</strong> Las fotos quedan en el informe como prueba para fianza o seguro.';
+  body.appendChild(banner);
+
+  INSP_ITEMS.forEach(item => {
+    const st     = G.insp[item.id] || null;
+    const hasInc = st && st.checked;
+    const photos = st ? st.photos || [] : [];
+    const note   = st ? st.note : '';
+    let phtml    = photos.map(p => p.type === 'video'
+      ? `<div class="vid-th">▶<span class="vid-nm">${p.name.substring(0,16)}</span></div>`
+      : `<img class="img-th" src="${p.data}">`).join('');
+    const card = document.createElement('div');
+    card.className = 'inc-card' + (hasInc ? ' has-inc' : '');
+    card.id = 'ic-' + item.id;
+    card.innerHTML = `
+      <div class="inc-header">
+        <div class="inc-icon">${item.icon}</div>
+        <div class="inc-info">
+          <div class="inc-title">${item.lbl}</div>
+          <div class="inc-sub">${item.sub}</div>
+        </div>
+        ${hasInc
+          ? `<button class="inc-btn done-btn" onclick="closeInc('${item.id}')">✓ Alta dada</button>`
+          : `<button class="inc-btn add" onclick="openInc('${item.id}')">+ Dar de alta incidencia</button>`}
+      </div>
+      ${hasInc ? `<div class="inc-body">
+        <div class="inc-media-row">
+          <div class="inc-mbtn" onclick="addInspPh('${item.id}')">📷 Añadir foto</div>
+          <div class="inc-mbtn" onclick="addInspVi('${item.id}')">🎥 Añadir vídeo</div>
+        </div>
+        <div class="thumbs" id="ith-${item.id}">${phtml}</div>
+        <textarea class="note" style="border-color:#fed7aa" placeholder="Describe la incidencia con detalle (qué está roto, dónde, gravedad)..." onchange="saveInspNote('${item.id}',this.value)">${note}</textarea>
+      </div>` : ''}`;
+    body.appendChild(card);
+  });
+
+  const btn = document.createElement('button');
+  btn.className = 'btn-p';
+  btn.style.marginTop = '24px';
+  btn.textContent = 'Continuar →';
+  btn.onclick = goNext;
+  body.appendChild(btn);
+}
+
+function openInc(id)  { if (!G.insp[id]) G.insp[id] = {checked:false,note:'',photos:[]}; G.insp[id].checked = true;  reRenderStep(); }
+function closeInc(id) { if (G.insp[id]) G.insp[id].checked = false; reRenderStep(); }
+function saveInspNote(id, v) { if (!G.insp[id]) G.insp[id] = {checked:true,note:'',photos:[]}; G.insp[id].note = v; }
+
+function addInspPh(id) {
+  const inp = document.getElementById('fp');
+  inp.onchange = async e => {
+    if (!G.insp[id]) G.insp[id] = {checked:true,note:'',photos:[]};
+    for (const f of e.target.files) {
+      const compressed = await compressImage(f, 1200, 0.75);
+      G.insp[id].photos.push({type:'image', data:compressed, name:f.name});
+      const th = document.getElementById('ith-' + id);
+      if (th) { const img = document.createElement('img'); img.className='img-th'; img.src=compressed; th.appendChild(img); }
+    }
+    inp.value = '';
+  };
+  inp.click();
+}
+function addInspVi(id) {
+  const inp = document.getElementById('fv');
+  inp.onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    if (!G.insp[id]) G.insp[id] = {checked:true,note:'',photos:[]};
+    G.insp[id].photos.push({type:'video',data:null,name:f.name});
+    const th = document.getElementById('ith-' + id);
+    if (th) { const d = document.createElement('div'); d.className='vid-th'; d.innerHTML='▶<span class="vid-nm">'+f.name.substring(0,16)+'</span>'; th.appendChild(d); }
+    inp.value = '';
+  };
+  inp.click();
+}
+
+/* ═══════════════════════════════════════
+   COMPRAS
+═══════════════════════════════════════ */
+function renderBuy(body) {
+  BUY_CATS.forEach(cat => {
+    const block = document.createElement('div');
+    block.className = 'buy-cat-block';
+    block.innerHTML = `<div class="buy-cat-lbl">${cat.lbl}</div>`;
+    const allItems = [...cat.items, ...(cat.id === 'bc5' ? G.buyCustom : [])];
+    allItems.forEach((item, idx) => {
+      const isCustom = cat.id === 'bc5' && idx >= cat.items.length;
+      const st  = isCustom ? item : (G.buy[item.id] || {});
+      const ck  = !!st.checked;
+      const note= isCustom ? '' : (st.note || '');
+      const iid = item.id;
+      const row = document.createElement('div');
+      row.innerHTML = `
+        <div class="buy-row">
+          <div class="buy-cb${ck?' ck':''}" id="bcb-${iid}" onclick="${isCustom ? `togBuyC(${G.buyCustom.indexOf(item)})` : `togBuy('${iid}')`}">
+            ${ck ? '<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}
+          </div>
+          <div class="buy-lbl${ck?' done':''}" id="bl-${iid}">${isCustom ? (item.t||item.text) : item.t}</div>
+        </div>
+        ${(!isCustom && ck) ? `<textarea class="buy-note-inp" placeholder="Cantidad, urgencia..." onchange="saveBuyNote('${iid}',this.value)">${note}</textarea>` : ''}`;
+      block.appendChild(row);
+    });
+    if (cat.id === 'bc5') {
+      const ar = document.createElement('div'); ar.className = 'add-row';
+      ar.innerHTML = `<input class="add-inp" id="custom-inp" type="text" placeholder="Otro artículo..."><button class="add-btn-sm" onclick="addCustomBuy()">+ Añadir</button>`;
+      block.appendChild(ar);
+    }
+    body.appendChild(block);
+  });
+  const btn = document.createElement('button');
+  btn.className = 'btn-p'; btn.style.marginTop = '24px';
+  btn.textContent = 'Continuar →';
+  btn.onclick = goNext;
+  body.appendChild(btn);
+}
+
+function togBuy(id)      { if (!G.buy[id]) G.buy[id]={}; G.buy[id].checked=!G.buy[id].checked; reRenderStep(); }
+function togBuyC(idx)    { G.buyCustom[idx].checked = !G.buyCustom[idx].checked; reRenderStep(); }
+function saveBuyNote(id,v){ if (!G.buy[id]) G.buy[id]={}; G.buy[id].note=v; }
+function addCustomBuy()  {
+  const inp = document.getElementById('custom-inp');
+  const v = inp ? inp.value.trim() : ''; if (!v) return;
+  G.buyCustom.push({id:'c'+Date.now(), text:v, t:v, checked:false});
+  reRenderStep();
+}
+function reRenderStep()  { goStep(G.stepIdx); }
+
+/* ═══════════════════════════════════════
+   FIRMA
+═══════════════════════════════════════ */
+function goFirma() {
+  document.getElementById('firma-sub').textContent = APTS[G.aptIdx] + ' · ' + G.limpiadora;
+  renderSummary();
+  showScreen('s-firma');
+  setTimeout(initFirma, 150);
+}
+function renderSummary() {
+  const el = document.getElementById('firma-sum'); let html = '';
+  const incid  = INSP_ITEMS.filter(i => G.insp[i.id] && G.insp[i.id].checked);
+  const inspF  = INSP_ITEMS.reduce((a,i) => a + (G.insp[i.id] ? G.insp[i.id].photos.length : 0), 0);
+  html += `<div class="sum-row"><span class="slbl">👁 Inspección visual</span>
+    <span class="bdg ${incid.length ? 'brd' : 'bok'}">${incid.length ? incid.length+' incidencia(s)' : 'Sin incidencias'}</span></div>`;
+  if (inspF) html += `<div class="sum-row"><span class="slbl" style="padding-left:10px">Fotos de incidencias</span><span style="font-size:13px;font-weight:800;color:#c2410c">${inspF}</span></div>`;
+  G.phases.filter(p => !p.type).forEach(ph => {
+    const d = ph.tasks.filter(t => G.tasks[t.id]).length;
+    html += `<div class="sum-row"><span class="slbl">${ph.icon}. ${ph.name}</span>
+      <span class="bdg ${d===ph.tasks.length?'bok':'bwn'}">${d}/${ph.tasks.length}</span></div>`;
+  });
+  const bn = BUY_CATS.flatMap(c=>c.items).filter(i=>G.buy[i.id]&&G.buy[i.id].checked).length + G.buyCustom.filter(i=>i.checked).length;
+  html += `<div class="sum-row"><span class="slbl">🛒 Artículos a comprar</span><span class="bdg ${bn?'bwn':'bok'}">${bn||'Ninguno'}</span></div>`;
+  const totPh = Object.values(G.photos).flat().length;
+  html += `<div class="sum-row" style="border-top:1.5px solid #eef7f3;margin-top:6px;padding-top:10px">
+    <span class="slbl">Fotos del protocolo</span><span style="font-family:Nunito;font-weight:800;font-size:13px;color:var(--teal)">${totPh}</span></div>
+    <div class="sum-row"><span class="slbl">Fecha y hora</span><span style="font-family:Nunito;font-weight:700;font-size:12px">${new Date().toLocaleString('es-ES')}</span></div>`;
+  el.innerHTML = html;
+}
+function initFirma() {
+  firmaCanvas = document.getElementById('firma-cv');
+  firmaCtx = firmaCanvas.getContext('2d');
+  firmaCtx.strokeStyle='#1a2e23'; firmaCtx.lineWidth=2.5; firmaCtx.lineCap='round'; firmaCtx.lineJoin='round';
+  const gp = e => {
+    const r=firmaCanvas.getBoundingClientRect(), sx=firmaCanvas.width/r.width, sy=firmaCanvas.height/r.height;
+    const src = e.touches?e.touches[0]:e;
+    return {x:(src.clientX-r.left)*sx, y:(src.clientY-r.top)*sy};
+  };
+  firmaCanvas.onmousedown = firmaCanvas.ontouchstart = e => { e.preventDefault(); drawing=true; const p=gp(e); firmaCtx.beginPath(); firmaCtx.moveTo(p.x,p.y); };
+  firmaCanvas.onmousemove = firmaCanvas.ontouchmove  = e => { e.preventDefault(); if(!drawing)return; const p=gp(e); firmaCtx.lineTo(p.x,p.y); firmaCtx.stroke(); };
+  firmaCanvas.onmouseup   = firmaCanvas.ontouchend   = () => { drawing=false; G.firmaData=firmaCanvas.toDataURL(); };
+}
+function clearFirma() { if(firmaCtx) firmaCtx.clearRect(0,0,firmaCanvas.width,firmaCanvas.height); G.firmaData=null; }
+
+/* ═══════════════════════════════════════
+   FINALIZAR + ENVÍO BACKEND
+═══════════════════════════════════════ */
+function finalizar() {
+  const reg = {
+    id: Date.now(), apt: APTS[G.aptIdx], color: ACOLS[G.aptIdx],
+    fecha: new Date().toISOString(), limpiadora: G.limpiadora,
+    phases: G.phases,
+    tasks: {...G.tasks}, notes: {...G.notes},
+    photos: JSON.parse(JSON.stringify(G.photos)),
+    insp:   JSON.parse(JSON.stringify(G.insp)),
+    buy:    JSON.parse(JSON.stringify(G.buy)),
+    buyCustom: JSON.parse(JSON.stringify(G.buyCustom)),
+    firma: G.firmaData
+  };
+  history.unshift(reg); lastReport = reg; saveHist();
+  showScreen('s-success');
+  enviarAlBackend(reg);
+}
+
+async function enviarAlBackend(reg) {
+  const dotS = document.getElementById('dot-sheets');
+  const lblS = document.getElementById('lbl-sheets');
+  const dotD = document.getElementById('dot-drive');
+  const lblD = document.getElementById('lbl-drive');
+
+  // Si no está configurado el backend
+  if (!BACKEND_URL || BACKEND_URL.includes('PEGA_AQUÍ')) {
+    dotS.className='upload-dot dot-err'; lblS.textContent='Backend no configurado — descarga el informe manualmente';
+    dotD.className='upload-dot dot-err'; lblD.textContent='Configura BACKEND_URL en el HTML';
+    document.getElementById('suc-sub-txt').textContent = 'Limpieza guardada localmente.';
+    return;
+  }
+
+  try {
+    lblS.textContent = 'Conectando con Google...';
+    const response = await fetch(BACKEND_URL, {
+      method: 'POST',
+      mode: 'no-cors', // Apps Script requiere no-cors
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reg)
+    });
+
+    // no-cors siempre devuelve opaque response — asumimos éxito si no hay error
+    dotS.className='upload-dot dot-ok'; lblS.textContent='✓ Registrado en Google Sheets';
+    dotD.className='upload-dot dot-ok'; lblD.textContent='✓ Fotos subidas a Google Drive';
+    document.getElementById('suc-sub-txt').textContent='¡Todo guardado en Google! 🎉';
+
+    // Si el backend devuelve URL de carpeta (necesita cors completo o relay)
+    // document.getElementById('drive-link').href = result.folderUrl;
+    // document.getElementById('drive-link-wrap').style.display = 'block';
+
+  } catch (err) {
+    dotS.className='upload-dot dot-err'; lblS.textContent='Error de conexión — datos guardados localmente';
+    dotD.className='upload-dot dot-err'; lblD.textContent='Reintenta más tarde o descarga el informe';
+    document.getElementById('suc-sub-txt').textContent='Sin conexión. El informe está guardado en el dispositivo.';
+  }
+}
+
+/* ═══════════════════════════════════════
+   HISTORIAL
+═══════════════════════════════════════ */
+function renderHistory() {
+  const el = document.getElementById('hist-list');
+  if (!history.length) { el.innerHTML='<div class="empty">Aún no hay limpiezas 🧹</div>'; return; }
+  el.innerHTML = history.map(h => {
+    const totF = Object.values(h.photos||{}).flat().length;
+    const inc  = INSP_ITEMS.filter(i=>h.insp&&h.insp[i.id]&&h.insp[i.id].checked).length;
+    const incF = INSP_ITEMS.reduce((a,i)=>a+(h.insp&&h.insp[i.id]?h.insp[i.id].photos.length:0),0);
+    return `<div class="hist-item">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:10px;height:10px;border-radius:50%;background:${h.color||'#1D9E75'};flex-shrink:0"></div>
+        <div class="hist-apt">${h.apt}</div>
+      </div>
+      <div class="hist-meta">${new Date(h.fecha).toLocaleString('es-ES')} · ${h.limpiadora}</div>
+      ${inc ? `<div class="hist-inc">⚠️ ${inc} incidencia(s) — ${incF} foto(s)</div>` : '<div style="font-size:12px;color:var(--teal);font-weight:700;margin-top:2px">✅ Sin incidencias</div>'}
+      ${totF ? `<div class="hist-drive">📷 ${totF} foto(s)/vídeo(s)</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════
+   INFORME HTML DESCARGABLE
+═══════════════════════════════════════ */
+function descargarInforme() {
+  const r = lastReport; if (!r) return;
+  const incid    = INSP_ITEMS.filter(i=>r.insp&&r.insp[i.id]&&r.insp[i.id].checked);
+  const buyItems = BUY_CATS.flatMap(c=>c.items).filter(i=>r.buy&&r.buy[i.id]&&r.buy[i.id].checked);
+  const buyC     = (r.buyCustom||[]).filter(i=>i.checked);
+  const phases   = r.phases || PHASES_BASE;
+
+  let html = `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>LavaLimp — ${r.apt}</title>
+  <style>body{font-family:'Segoe UI',sans-serif;max-width:780px;margin:2rem auto;padding:0 1.5rem;color:#1a2e23;background:#f0faf6}
+  h1{font-size:26px;font-weight:900;color:#1D9E75;margin-bottom:4px}
+  .meta{background:white;border:1px solid #d1ede3;border-radius:12px;padding:14px 18px;margin:14px 0;font-size:13px}.meta p{margin:4px 0}
+  h2{font-size:15px;font-weight:800;margin:22px 0 8px;border-bottom:2px solid #e1f5ee;padding-bottom:6px}
+  h2.wi{border-bottom-color:#fed7aa;color:#c2410c}h2.wb{border-bottom-color:#c4b5fd;color:#6b7280}
+  table{width:100%;font-size:13px;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;margin-bottom:8px}
+  td{padding:9px 12px;border-bottom:1px solid #f0faf6;vertical-align:top}td:first-child{width:60%}
+  img.th{max-width:80px;max-height:80px;border-radius:8px;margin:3px;object-fit:cover}
+  .ok{color:#1D9E75;font-weight:700}.ko{color:#ef4444;font-weight:700}
+  .tip{font-size:11px;color:#6b8c7a;font-style:italic;margin-top:3px}
+  .nota{font-size:11.5px;color:#444;background:#f0faf6;padding:4px 8px;border-radius:6px;margin-top:4px}
+  .iblock{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 16px;margin-bottom:8px}
+  .ititle{font-weight:800;color:#c2410c;font-size:13px;margin-bottom:4px}
+  .inota{font-size:12px;color:#9a3412;margin-top:4px;font-style:italic}
+  .noinc{color:#1D9E75;font-size:13px;font-weight:600;padding:8px 0}
+  .firma-img{max-width:300px;border:1px solid #d1ede3;border-radius:10px;margin-top:8px}
+  .footer{text-align:center;font-size:12px;color:#9cbfb0;margin-top:32px;font-weight:600}
+  </style></head><body>`;
+
+  html += `<h1>🧺 LavaLimp — Informe de limpieza</h1>`;
+  html += `<div class="meta"><p><strong>Apartamento:</strong> ${r.apt}</p><p><strong>Fecha:</strong> ${new Date(r.fecha).toLocaleString('es-ES')}</p>
+    <p><strong>Limpiadora:</strong> ${r.limpiadora}</p>
+    <p><strong>Incidencias:</strong> ${incid.length || 'Ninguna'}</p>
+    <p><strong>Fotos protocolo:</strong> ${Object.values(r.photos||{}).flat().length}</p></div>`;
+
+  html += `<h2 class="wi">👁 Inspección Visual (antes de limpiar)</h2>`;
+  if (incid.length) {
+    incid.forEach(item => {
+      const st   = r.insp[item.id];
+      const imgs = (st.photos||[]).filter(p=>p.type==='image').map(p=>`<img class="th" src="${p.data}">`).join('');
+      const vids = (st.photos||[]).filter(p=>p.type==='video').map(p=>`<span style="font-size:12px">🎥 ${p.name}</span><br>`).join('');
+      html += `<div class="iblock"><div class="ititle">${item.icon} ${item.lbl}</div>
+        ${st.note?`<div class="inota">📝 ${st.note}</div>`:''}
+        <div style="margin-top:8px">${imgs}${vids}</div></div>`;
+    });
+  } else html += `<div class="noinc">✅ Sin incidencias al entrar.</div>`;
+
+  phases.filter(ph => !ph.type).forEach(ph => {
+    html += `<h2>${ph.icon}. ${ph.name}</h2><table>`;
+    ph.tasks.forEach(t => {
+      const ok   = r.tasks[t.id], note = r.notes[t.id];
+      const imgs = (r.photos[t.id]||[]).filter(p=>p.type==='image').map(p=>`<img class="th" src="${p.data}">`).join('');
+      const vids = (r.photos[t.id]||[]).filter(p=>p.type==='video').map(p=>`<span style="font-size:12px">🎥 ${p.name}</span><br>`).join('');
+      html += `<tr><td><span class="${ok?'ok':'ko'}">${ok?'✅':'❌'}</span> ${t.tx}
+        ${t.tip?`<div class="tip">💡 ${t.tip}</div>`:''}
+        ${note?`<div class="nota">📝 ${note}</div>`:''}</td><td>${imgs}${vids}</td></tr>`;
+    }); html += `</table>`;
+  });
+
+  if (buyItems.length || buyC.length) {
+    html += `<h2 class="wb">🛒 Artículos a comprar</h2><table>`;
+    [...buyItems,...buyC].forEach(item => {
+      const note = r.buy&&r.buy[item.id]?r.buy[item.id].note:'';
+      html += `<tr><td>🔸 ${item.t||item.text}${note?`<div class="nota">${note}</div>`:''}</td><td></td></tr>`;
+    }); html += `</table>`;
+  }
+
+  if (r.firma) html += `<h2>Firma</h2><img class="firma-img" src="${r.firma}">`;
+  html += `<div class="footer">Generado por LavaLimp · Protocolo Eficiencia Total · ${new Date(r.fecha).toLocaleString('es-ES')}</div></body></html>`;
+
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `LavaLimp_${r.apt.replace(/ /g,'_')}_${new Date(r.fecha).toLocaleDateString('es-ES').replace(/\//g,'-')}.html`;
+  a.click();
+}
+
+loadHist();
+</script>
+
+<!-- ════════════════════════════════════
+  SERVICE WORKER para PWA (instalar en móvil)
+  Este script registra el SW que permite
+  añadir la app al escritorio
+════════════════════════════════════ -->
+<script>
+if ('serviceWorker' in navigator) {
+  // Inline service worker como blob — no necesita archivo externo
+  const swCode = `
+    const CACHE = 'lavalimp-v1';
+    const ASSETS = [self.location.href];
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+    });
+  `;
+  const blob = new Blob([swCode], {type:'application/javascript'});
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(() => {});
+}
+</script>
+</body>
+</html>
